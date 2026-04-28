@@ -1,13 +1,13 @@
 # JavaScript / TypeScript / dev keywords.
 
 fc	function
-rtn	return
+rut	return
 cs	const
 asy	async
 awt	await
 imo	import
-ept	export
-dft	default
+ext	export
+def	default
 cls	class
 itf	interface
 typ	type
@@ -16,11 +16,11 @@ trw	throw
 cah	catch(^
 ust	useState(^
 uef	useEffect(^
-umo	useMemo(^
+ume	useMemo(^
 ucb	useCallback(^
 res	response
-rqs	request
-cnl	console.^
+req	request
+con	console.^
 und	undefined
 nul	null
 bln	boolean
