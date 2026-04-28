@@ -6,15 +6,16 @@ Pure simultaneous-key chords. TSV → Karabiner JSON pipeline. Trailing space on
 
 Goal: validate that chord typing on a regular mechanical keyboard is mechanically tolerable for daily use, before investing more.
 
-## v2 — modifier suffixes (after v1 feels right)
+## v2 — modifier suffixes (designed, not implemented)
 
-After triggering a chord, a follow-up key modifies the output. Examples:
+After triggering a chord, a follow-up key modifies the output. Agreed scope (narrowed during design):
 
-- `<chord> + ;` → pluralise (`fct → functions`)
-- `<chord> + ,` → "-ing" (`go → going`)
-- `<chord> + .` → past tense (`type → typed`)
+- `<chord> + ;` → pluralise — mechanical fallback `backspace + s + space`
+- Skip `,` (-ing) and `.` (past) mechanical: morphology too irregular in EN/FR
+- TSV gets an optional 3rd column for explicit plural override (e.g., `mke<TAB>make<TAB>made`)
+- If column empty: mechanical fallback applies; if filled: explicit override fires
 
-Mechanism: Karabiner state variable set when a chord fires, consumed by the next keypress within ~500ms.
+Mechanism: each chord manipulator sets a Karabiner state variable + delayed_action to reset it after ~500ms. A listener manipulator on `;` fires when the variable is set. For chords with explicit override, the listener uses chord-specific output instead of mechanical.
 
 ## v3 — chained chord expansion (much later)
 
