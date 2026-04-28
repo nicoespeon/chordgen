@@ -1,0 +1,17 @@
+{
+  "name": "chordgen",
+  "version": "0.1.0",
+  "description": "Generate Karabiner-Elements chording rules from BÉPO TSV chord lists",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsx src/build.ts",
+    "stats": "tsx src/stats.ts",
+    "analyze": "tsx src/analyze.ts"
+  },
+  "devDependencies": {
+    "tsx": "4.19.2",
+    "typescript": "5.7.2",
+    "@types/node": "22.10.2"
+  }
+}

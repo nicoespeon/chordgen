@@ -1,0 +1,56 @@
+# BÉPO 1.1 finger assignments for touch typing.
+# Each BÉPO character is mapped to the finger that types it in standard touch-typing technique.
+# This file is the source of truth for the finger-conflict check (chords that need the same finger twice are rejected).
+#
+# Format: bepo_char<TAB>finger
+# Fingers: L_pinky, L_ring, L_middle, L_index, R_index, R_middle, R_ring, R_pinky
+#
+# Edit any line that doesn't match how you actually type. Fingers don't lie — chords designed against this map will be ergonomic for you specifically.
+
+# ─── Left pinky ─────────────────────────────────────────────
+a	L_pinky
+à	L_pinky
+b	L_pinky
+
+# ─── Left ring ──────────────────────────────────────────────
+u	L_ring
+é	L_ring
+y	L_ring
+
+# ─── Left middle ────────────────────────────────────────────
+i	L_middle
+p	L_middle
+x	L_middle
+
+# ─── Left index ─────────────────────────────────────────────
+e	L_index
+,	L_index
+o	L_index
+è	L_index
+.	L_index
+k	L_index
+
+# ─── Right index ────────────────────────────────────────────
+c	R_index
+t	R_index
+v	R_index
+'	R_index
+q	R_index
+
+# ─── Right middle ───────────────────────────────────────────
+s	R_middle
+d	R_middle
+g	R_middle
+
+# ─── Right ring ─────────────────────────────────────────────
+r	R_ring
+l	R_ring
+h	R_ring
+
+# ─── Right pinky ────────────────────────────────────────────
+n	R_pinky
+m	R_pinky
+j	R_pinky
+z	R_pinky
+w	R_pinky
+f	R_pinky

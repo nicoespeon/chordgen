@@ -1,0 +1,28 @@
+# JavaScript / TypeScript / dev keywords.
+
+fc	function
+rtn	return
+cs	const
+asy	async
+awt	await
+imo	import
+ept	export
+dft	default
+cls	class
+itf	interface
+typ	type
+xtd	extends
+trw	throw
+cah	catch(^
+ust	useState(^
+uef	useEffect(^
+umo	useMemo(^
+ucb	useCallback(^
+res	response
+rqs	request
+cnl	console.^
+und	undefined
+nul	null
+bln	boolean
+nbr	number
+ary	array

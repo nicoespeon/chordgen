@@ -1,0 +1,39 @@
+# English high-frequency words.
+# Format: chord<TAB>output  (trailing space added; suffix ^ to disable)
+# All chords here are 3 keys, no shift, no duplicates within a chord.
+
+an	and
+th	the
+tha	that
+the	then
+thei	their
+ths	this
+tho	those
+thm	them
+thg	through
+wit	with
+wil	will
+wh	when
+wch	which
+whe	where
+wht	what
+wld	would
+sh	should
+cld	could
+aot	about
+agn	again
+bcs	because
+bfr	before
+afr	after
+nvr	never
+pel	people
+exa	example
+tim	time
+jst	just
+fr	from
+cdo	code
+yo	you
+yr	your
+ha	have
+tes	test
+not	not
