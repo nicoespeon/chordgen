@@ -43,20 +43,22 @@ async function main() {
 		`\nchordgen practice — ${chords.length} chords. Press Ctrl-C to quit.\n`,
 	);
 
-	const session = { tested: 0, correct: 0 };
+	const sessionRecords: HistoryRecord[] = [];
+	const chordsByCode = new Map(chords.map((c) => [c.chord, c]));
 	let lastChord: string | null = null;
 
 	const rl = createInterface({ input: process.stdin, output: process.stdout });
 	rl.on("close", () => {
-		printSummary(session);
+		printSummary(sessionRecords, chordsByCode);
 		process.exit(0);
 	});
 
 	while (true) {
 		const entry = pickWeighted(chords, weights, lastChord);
 		const start = Date.now();
+		const correct = sessionRecords.filter((r) => r.success).length;
 		const answer = await rl.question(
-			`[${session.correct}/${session.tested}] Type chord for: ${entry.output}\n> `,
+			`[${correct}/${sessionRecords.length}] Type chord for: ${entry.output}\n> `,
 		);
 		const elapsed = Date.now() - start;
 
@@ -70,12 +72,11 @@ async function main() {
 		};
 		appendFileSync(HISTORY_FILE, `${JSON.stringify(record)}\n`);
 		history.push(record);
+		sessionRecords.push(record);
 		weights.set(entry.chord, computeWeight(entry.chord, history));
 		lastChord = entry.chord;
 
-		session.tested++;
 		if (success) {
-			session.correct++;
 			console.log(`✓ correct (${elapsed}ms)\n`);
 		} else {
 			console.log(`✗ expected chord: ${entry.chord}\n`);
@@ -134,13 +135,33 @@ function pickWeighted(
 	return candidates[0] ?? chords[0]!;
 }
 
-function printSummary(session: { tested: number; correct: number }) {
-	if (session.tested === 0) {
+function printSummary(
+	records: HistoryRecord[],
+	chordsByCode: Map<string, ChordEntry>,
+) {
+	if (records.length === 0) {
 		console.log("\nNo chords practiced this session.");
 		return;
 	}
-	const accuracy = ((session.correct / session.tested) * 100).toFixed(1);
-	console.log(
-		`\nSession: ${session.correct}/${session.tested} (${accuracy}%) ✓`,
-	);
+
+	const correct = records.filter((r) => r.success).length;
+	const accuracy = ((correct / records.length) * 100).toFixed(1);
+	console.log(`\nSession: ${correct}/${records.length} (${accuracy}%)`);
+
+	const failsByChord = new Map<string, number>();
+	for (const r of records) {
+		if (r.success) continue;
+		failsByChord.set(r.chord, (failsByChord.get(r.chord) ?? 0) + 1);
+	}
+
+	if (failsByChord.size === 0) return;
+
+	const sorted = [...failsByChord.entries()].sort(([, a], [, b]) => b - a);
+	console.log(`\nMissed chords:`);
+	for (const [chord, fails] of sorted) {
+		const entry = chordsByCode.get(chord);
+		const output = entry?.output ?? "?";
+		const total = records.filter((r) => r.chord === chord).length;
+		console.log(`  ${chord.padEnd(6)} → ${output.padEnd(15)} ${fails}/${total} fail`);
+	}
 }
