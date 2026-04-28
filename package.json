@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsx src/build.ts",
     "stats": "tsx src/stats.ts",
-    "analyze": "tsx src/analyze.ts"
+    "analyze": "tsx src/analyze.ts",
+    "practice": "tsx src/practice.ts"
   },
   "devDependencies": {
     "tsx": "4.19.2",

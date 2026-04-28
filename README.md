@@ -110,3 +110,23 @@ freq	word
 ```
 
 Pipe to a file (`pnpm analyze ~/path > suggestions.tsv`), pick the words worth chording, design chord codes for them.
+
+## Practice
+
+```bash
+pnpm practice
+```
+
+Drills your chords with weighted random selection: chords you've gotten wrong (or never seen) come up more often. Each round shows the output word, you type the chord, the script validates the typed result.
+
+```
+[12/15] Type chord for: through
+> thg → outputs "through "
+✓ correct (240ms)
+```
+
+History persists at `~/.local/share/chordgen/practice.jsonl` (one JSON line per attempt). Weights recompute live during a session.
+
+Ctrl-C to quit. Session summary prints on exit.
+
+The weighting is independent of `pnpm stats` (real-world usage frequency) — practice only cares about your accuracy in practice, not how often you actually use the word.
