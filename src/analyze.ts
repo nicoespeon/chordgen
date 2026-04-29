@@ -31,7 +31,7 @@ function main() {
     .sort(([, a], [, b]) => b - a)
     .slice(0, TOP_N);
 
-  console.log("freq\tword");
+  console.log("freq\tword\n----\t----\n");
   for (const [word, count] of candidates) {
     console.log(`${count}\t${word}`);
   }
