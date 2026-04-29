@@ -1,7 +1,13 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { entryToManipulator, type Manipulator } from "./generate-rule.ts";
+import {
+  entryToManipulator,
+  mechanicalListenerManipulator,
+  overrideListenerManipulator,
+  V2_PENDING_REGULAR,
+  type Manipulator,
+} from "./generate-rule.ts";
 import { parseTsvFile, type ChordEntry } from "./parse-tsv.ts";
 
 const PROJECT_ROOT = join(import.meta.dirname, "..");
@@ -58,7 +64,37 @@ function main() {
   const sortedEntries = [...allEntries].sort(
     (a, b) => b.chord.length - a.chord.length,
   );
-  const manipulators = sortedEntries.map(entryToManipulator);
+
+  let nextOverrideId = 1;
+  const overrideEntries: Array<{ entry: ChordEntry; pendingValue: number }> = [];
+  let hasRegularChord = false;
+
+  const chordManipulators = sortedEntries.map((entry) => {
+    if (!entry.trailingSpace) return entryToManipulator(entry, null);
+    if (entry.pluralOverride) {
+      const pendingValue = nextOverrideId++;
+      overrideEntries.push({ entry, pendingValue });
+      return entryToManipulator(entry, pendingValue);
+    }
+    hasRegularChord = true;
+    return entryToManipulator(entry, V2_PENDING_REGULAR);
+  });
+
+  const listenerManipulators: Manipulator[] = [];
+  if (hasRegularChord) {
+    listenerManipulators.push(mechanicalListenerManipulator("left_shift"));
+    listenerManipulators.push(mechanicalListenerManipulator("right_shift"));
+  }
+  for (const { entry, pendingValue } of overrideEntries) {
+    listenerManipulators.push(
+      overrideListenerManipulator(entry, pendingValue, "left_shift"),
+    );
+    listenerManipulators.push(
+      overrideListenerManipulator(entry, pendingValue, "right_shift"),
+    );
+  }
+
+  const manipulators = [...chordManipulators, ...listenerManipulators];
 
   const totalChords = allEntries.length;
   const rules: Rule[] = [
