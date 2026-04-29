@@ -13,6 +13,7 @@ Personal tool that turns simultaneous keypress chords into typed words via Karab
 - Each chord trigger logs to `~/.local/share/chordgen/chordgen-YYYY-MM.log` via Karabiner's `to_after_key_up` `shell_command`. `pnpm stats` reads these.
 - `pnpm practice` is a weighted-random drill: lower per-chord accuracy → higher pick weight. History at `~/.local/share/chordgen/practice.jsonl`. Independent from real-world stats.
 - `pnpm analyze <dir>` scans markdown files (e.g., a Notion export) and prints word-frequency candidates the user hasn't chorded yet.
+- `pnpm sort` reorders `chords/*.tsv` by output column (alpha). Comments delimit sections; data is sorted within each section, sections stay in source order. A `simple-git-hooks` pre-commit hook runs sort + `git add chords/*.tsv` before each commit.
 
 ## File map
 
@@ -28,6 +29,8 @@ src/
   stats.ts               Parses chord trigger log files.
   analyze.ts             Word-frequency scanner for markdown corpora.
   practice.ts            Weighted-random drill CLI with end-of-session review.
+  sort.ts                Sort chord files alpha by output, sections delimited by comments. Pure logic + CLI entry.
+  sort.test.ts           Vitest suite for sortContent.
 ```
 
 ## Conventions
@@ -38,6 +41,7 @@ src/
 - **No same-finger chords**: build rejects them via `fingers.tsv` lookup.
 - **Adaptive threshold**: 25ms (2-key) / 50ms (3-key) / 80ms (4-key). Edit `THRESHOLDS_BY_CHORD_LENGTH` in `src/generate-rule.ts`.
 - **Auto-sync**: build only updates a profile that already imported the rule once (matched by description prefix). First import is a one-time manual step.
+- **Sort + partial commits**: the pre-commit hook runs `pnpm sort` against the working tree and re-stages all of `chords/*.tsv`. If you ever do a partial-stage on a TSV (e.g. `git add -p`), the hook will stage the unstaged parts too. Accepted trade-off — partial commits on TSVs aren't a current workflow.
 
 ## Karabiner gotchas the user already hit
 
@@ -50,7 +54,7 @@ src/
 - Named exports, no default exports.
 - Type inference for locals; explicit types for public APIs only when needed.
 - No comments explaining what code does (names should be self-documenting). Comments only for non-obvious why.
-- Tests not present yet; TDD if adding logic-heavy modules.
+- Vitest is the test runner (`pnpm test`, `pnpm test:watch`). TDD for logic-heavy modules. Co-locate tests next to source as `*.test.ts`.
 
 ## How the user wants to work
 
@@ -73,6 +77,7 @@ All v1 work is shipped on GitHub at `nicoespeon/chordgen`, branch `main`:
 - `pnpm stats` reading the rotating monthly log
 - `pnpm analyze` for markdown corpus → word frequency candidates
 - `pnpm practice` weighted-random drill with end-of-session review of missed chords
+- `pnpm sort` + simple-git-hooks pre-commit hook to keep `chords/*.tsv` alpha-sorted by output
 - 79 starter chords (en, fr, dev) — user has been editing these freely
 
 ## What's open (v2 / nice-to-haves)

@@ -8,11 +8,20 @@
     "build": "tsx src/build.ts",
     "stats": "tsx src/stats.ts",
     "analyze": "tsx src/analyze.ts",
-    "practice": "tsx src/practice.ts"
+    "practice": "tsx src/practice.ts",
+    "sort": "tsx src/sort.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepare": "simple-git-hooks"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm sort && git add chords/*.tsv"
   },
   "devDependencies": {
+    "@types/node": "25.6.0",
+    "simple-git-hooks": "2.13.1",
     "tsx": "4.19.2",
     "typescript": "5.7.2",
-    "@types/node": "22.10.2"
+    "vitest": "4.1.5"
   }
 }
