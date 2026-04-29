@@ -31,6 +31,8 @@ src/
   practice.ts            Weighted-random drill CLI with end-of-session review.
   sort.ts                Sort chord files alpha by output, sections delimited by comments. Pure logic + CLI entry.
   sort.test.ts           Vitest suite for sortContent.
+  parse-tsv.test.ts      Vitest suite for parseTsvContent (incl. 3rd-column plural override).
+  generate-rule.test.ts  Vitest suite for chord + v2 listener manipulators.
 ```
 
 ## Conventions
@@ -82,7 +84,7 @@ All v1 work is shipped on GitHub at `nicoespeon/chordgen`, branch `main`:
 
 ## What's open (v2 / nice-to-haves)
 
-- **v2 modifier suffixes** — designed (see ROADMAP.md), not built. Agreed: only `;` plural with mechanical fallback, optional explicit override via 3rd TSV column. Skip `-ing`/`-ed` mechanical (morphology too irregular).
+- **v2 modifier suffixes** — implemented and validated in vivo on Karabiner (Test 1 passing 2026-04-29). Mechanism: chord manipulators set `chordgen_pending`; Shift-tap listeners (`to_if_alone` on left + right shift) gated by `variable_if` fire the mechanical fallback or override sequence. Caret chords excluded. **Trade-off intentionally accepted**: `to_delayed_action.to_if_canceled` is left empty. Reason: Karabiner cancels the timer the moment any key is pressed, and if the cancel reset `pending=0` it raced ahead of the listener's condition evaluation, so v2 never fired. With the empty cancel, `pending` stays at -1 until the listener fires (which resets it) or the next chord overwrites it. Stale-state footgun: typing a chord, then unrelated keys, then a deliberate Shift-tap will fire v2 on the wrong context (backspace+s applied to whatever was last typed). In practice rare since tap-Shift-alone is an unusual gesture.
 - **Practice improvements** the user said no to in v1 but might want later: SM-2 spaced repetition (only worth it past ~200 chords), category filter (`pnpm practice dev`), skip key, cross-session weak-chord stats.
 - **`pnpm cheatsheet`** for printable chord reference — discussed but not built.
 - **Pinky-aware threshold bonus** — discussed, not built. Add ms when a chord involves pinky fingers if needed.

@@ -8,14 +8,15 @@ Goal: validate that chord typing on a regular mechanical keyboard is mechanicall
 
 ## v2 — modifier suffixes (designed, not implemented)
 
-After triggering a chord, a follow-up key modifies the output. Agreed scope (narrowed during design):
+After triggering a chord, a follow-up key modifies the output. Agreed scope (settled during design — see `V2_NOTES.md` for the full Q&A):
 
-- `<chord> + ;` → pluralise — mechanical fallback `backspace + s + space`
-- Skip `,` (-ing) and `.` (past) mechanical: morphology too irregular in EN/FR
-- TSV gets an optional 3rd column for explicit plural override (e.g., `mke<TAB>make<TAB>made`)
+- `<chord> + Shift-tap` → pluralise — mechanical fallback `backspace + s + space`
+- Skip `-ing` and past-tense modifiers: morphology too irregular in EN/FR
+- TSV gets an optional 3rd column for explicit irregular plural (e.g., `chld<TAB>child<TAB>children`)
 - If column empty: mechanical fallback applies; if filled: explicit override fires
+- Caret chords (`^` suffix, no auto-space) are excluded from the v2 mechanism
 
-Mechanism: each chord manipulator sets a Karabiner state variable + delayed_action to reset it after ~500ms. A listener manipulator on `;` fires when the variable is set. For chords with explicit override, the listener uses chord-specific output instead of mechanical.
+Mechanism: each chord manipulator sets a global Karabiner state variable `chordgen_pending` (0 = none, -1 = regular, 1+ = override ID) + delayed_action to reset to 0 after 800 ms. Listener manipulators on `Shift-tap` (via `to_if_alone`) fire conditional on `chordgen_pending`'s value: one generic listener for the mechanical fallback, one per override.
 
 ## v3 — chained chord expansion (much later)
 
