@@ -5,7 +5,7 @@ asy	async
 awt	await
 bln	boolean
 cah	catch(^
-cls	class
+cls	class	classes
 con	console.^
 cs	const
 def	default
