@@ -14,6 +14,7 @@ Personal tool that turns simultaneous keypress chords into typed words via Karab
 - `pnpm practice` is a weighted-random drill: lower per-chord accuracy → higher pick weight. History at `~/.local/share/chordgen/practice.jsonl`. Independent from real-world stats.
 - `pnpm analyze <dir>` scans markdown files (e.g., a Notion export) and prints word-frequency candidates the user hasn't chorded yet.
 - `pnpm sort` reorders `chords/*.tsv` by output column (alpha). Comments delimit sections; data is sorted within each section, sections stay in source order. A `simple-git-hooks` pre-commit hook runs sort + `git add chords/*.tsv` before each commit.
+- `pnpm disable` pushes a 0-manipulator rule pack to Karabiner (chord typing temporarily off). TSVs are untouched. Re-enable with `pnpm build`.
 
 ## File map
 
@@ -22,6 +23,8 @@ chords/                  TSV chord lists (en, fr, dev — extend freely)
 fingers.tsv              BÉPO char → finger map. Source of truth for the conflict check.
 src/
   build.ts               Orchestrator: parse all TSVs, validate, generate JSON, sync.
+  disable.ts             Push an empty rule pack to Karabiner (temporary off-switch). TSVs untouched.
+  karabiner-sync.ts      Shared module: write rule pack to dist/, assets dir, and patch active profile.
   parse-tsv.ts           Per-line parsing + per-chord validation (length, dup chars, finger conflict).
   fingers.ts             Loads fingers.tsv, exposes `detectFingerConflict`.
   bepo-keymap.ts         BÉPO char → physical Karabiner key_code (with shift state, dead-key sequences for ê/â/î/ô/û).
