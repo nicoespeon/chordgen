@@ -1,21 +1,24 @@
 # Mots français haute-fréquence.
 # Format : chord<TAB>output (espace finale ajoutée ; suffixe ^ pour désactiver)
 
-por	pour
-da	dans
-av	avec
-pls	plus
-etr	être
-avr	avoir
-fre	faire
-pc	parce que
-pq	pourquoi
-ce	cette
-enc	encore
-bcp	beaucoup
-tjr	toujours
-jas	jamais
-mait	maintenant
-qnd	quand
+ca	Carlo
+ni	Nicolas
 als	alors
 ajd	aujourd'hui
+av	avec
+avr	avoir
+bcp	beaucoup
+ce	cette
+da	dans
+enc	encore
+fre	faire
+jas	jamais
+mait	maintenant
+ma	mais
+pc	parce que
+pls	plus
+por	pour
+pq	pourquoi
+qua	quand
+touj	toujours
+etr	être
