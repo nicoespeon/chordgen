@@ -8,7 +8,7 @@ Goal: validate that chord typing on a regular mechanical keyboard is mechanicall
 
 ## v2 — modifier suffixes (designed, not implemented)
 
-After triggering a chord, a follow-up key modifies the output. Agreed scope (settled during design — see `V2_NOTES.md` for the full Q&A):
+After triggering a chord, a follow-up key modifies the output. Agreed scope:
 
 - `<chord> + Shift-tap` → pluralise — mechanical fallback `backspace + s + space`
 - Skip `-ing` and past-tense modifiers: morphology too irregular in EN/FR
