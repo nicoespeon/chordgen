@@ -1,6 +1,10 @@
 import { readFileSync } from "node:fs";
 import { detectFingerConflict } from "./fingers.ts";
 
+const MIN_CHORD_KEYS = 3;
+const MAX_CHORD_KEYS = 4;
+const MIN_OUTPUT_CHARS = 5;
+
 export type ChordEntry = {
 	chord: string;
 	output: string;
@@ -53,8 +57,10 @@ function parseLine(line: string, source: string, lineNumber: number): LineResult
 	const rawOutput = fields[1]!;
 	const overrideField: string | undefined = fields[2];
 
-	if (chord.length < 2 || chord.length > 4) {
-		return { error: `${source}:${lineNumber} — chord "${chord}" must be 2-4 keys` };
+	if (chord.length < MIN_CHORD_KEYS || chord.length > MAX_CHORD_KEYS) {
+		return {
+			error: `${source}:${lineNumber} — chord "${chord}" must be ${MIN_CHORD_KEYS}-${MAX_CHORD_KEYS} keys (2-key chords collide with common bigrams at fast typing speeds)`,
+		};
 	}
 	if (rawOutput === "") {
 		return { error: `${source}:${lineNumber} — empty output for chord "${chord}"` };
@@ -72,6 +78,12 @@ function parseLine(line: string, source: string, lineNumber: number): LineResult
 
 	const trailingSpace = !rawOutput.endsWith("^");
 	const output = trailingSpace ? rawOutput : rawOutput.slice(0, -1);
+
+	if (output.length < MIN_OUTPUT_CHARS) {
+		return {
+			error: `${source}:${lineNumber} — output "${output}" is ${output.length} chars (min ${MIN_OUTPUT_CHARS}); short outputs are faster to type directly than to chord`,
+		};
+	}
 
 	let pluralOverride: string | undefined;
 	if (overrideField !== undefined) {

@@ -6,7 +6,6 @@ import {
 import type { ChordEntry } from "./parse-tsv.ts";
 
 const THRESHOLDS_BY_CHORD_LENGTH: Record<number, number> = {
-	2: 15,
 	3: 40,
 	4: 80,
 };
