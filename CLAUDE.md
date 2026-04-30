@@ -41,10 +41,13 @@ src/
 ## Conventions
 
 - **TSV format**: `chord<TAB>output`. Trailing `^` on output disables auto-space (use for prefixes or `useEffect(`-style suffixes).
+- **Chord constraints (enforced at parse time)**:
+  - Chord (column 1): **3-4 keys**. 2-key chords were dropped 2026-04-30 because at 84 WPM they collided with common bigrams (`on`, `ni`, etc.) even at threshold 20 ms.
+  - Output (column 2 after caret stripping): **≥5 chars**. Shorter outputs (`code`, `time`, `not`, `the`) are faster to type directly than to reach for a chord. The cognitive cost of recognising "I should chord this" is ~150-300 ms, which exceeds direct-typing time for short words.
+  - Constants: `MIN_CHORD_KEYS`, `MAX_CHORD_KEYS`, `MIN_OUTPUT_CHARS` in `src/parse-tsv.ts`. Adjust if the typing-speed math changes.
 - **Order-insensitive chords**: same key set = same chord. Build catches cross-file collisions.
-- **No subset chords by accident**: 2-key chords coexist with 3-key supersets (e.g., `th` + `tha`). Build sorts manipulators by length descending so longer matches first.
 - **No same-finger chords**: build rejects them via `fingers.tsv` lookup.
-- **Adaptive threshold**: 25ms (2-key) / 50ms (3-key) / 80ms (4-key). Edit `THRESHOLDS_BY_CHORD_LENGTH` in `src/generate-rule.ts`.
+- **Adaptive threshold**: 40 ms (3-key) / 80 ms (4-key). Edit `THRESHOLDS_BY_CHORD_LENGTH` in `src/generate-rule.ts`.
 - **Auto-sync**: build only updates a profile that already imported the rule once (matched by description prefix). First import is a one-time manual step.
 - **Sort + partial commits**: the pre-commit hook runs `pnpm sort` against the working tree and re-stages all of `chords/*.tsv`. If you ever do a partial-stage on a TSV (e.g. `git add -p`), the hook will stage the unstaged parts too. Accepted trade-off — partial commits on TSVs aren't a current workflow.
 
@@ -83,7 +86,7 @@ All v1 work is shipped on GitHub at `nicoespeon/chordgen`, branch `main`:
 - `pnpm analyze` for markdown corpus → word frequency candidates
 - `pnpm practice` weighted-random drill with end-of-session review of missed chords
 - `pnpm sort` + simple-git-hooks pre-commit hook to keep `chords/*.tsv` alpha-sorted by output
-- 79 starter chords (en, fr, dev) — user has been editing these freely
+- 51 chords (en, fr, dev) after the 2026-04-30 prune — only 3-4 key inputs with ≥5 char outputs
 
 ## What's open (v2 / nice-to-haves)
 

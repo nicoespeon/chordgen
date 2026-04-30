@@ -6,6 +6,19 @@ Pure simultaneous-key chords. TSV → Karabiner JSON pipeline. Trailing space on
 
 Goal: validate that chord typing on a regular mechanical keyboard is mechanically tolerable for daily use, before investing more.
 
+### Chord eligibility (decided 2026-04-30)
+
+Only chords that genuinely save time over direct typing are allowed. Two hard constraints, enforced at parse time:
+
+- **Input ≥ 3 keys.** 2-key chords collide with English/French bigrams (`on`, `ni`, `er`, `re`…) at fast typing speeds. The user types at 84 WPM; bigrams arrive in 50-80 ms, faster than any usable simultaneous-press threshold. Tightening below 25 ms made some chords physically un-fireable. The class of 2-key chords is unsalvageable.
+- **Output ≥ 5 characters.** Direct typing of a 4-char word at 84 WPM costs ~280-400 ms. A chord costs ~150-300 ms cognitive recognition + ~50-100 ms execution. For short outputs the chord doesn't beat direct typing — and adds friction. The 5-char threshold is where chord-vs-type starts to clearly favour the chord.
+
+The 2026-04-30 prune dropped 47 of the original 98 chords. What remains is the high-ROI set.
+
+### Open questions (potential v1.x)
+
+- **Pinky-aware threshold bonus** — discussed during v1, not built. Add ms when a chord involves pinky fingers if needed.
+
 ## v2 — modifier suffixes (designed, not implemented)
 
 After triggering a chord, a follow-up key modifies the output. Agreed scope:
