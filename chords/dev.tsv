@@ -1,4 +1,5 @@
 # JavaScript / TypeScript / dev keywords.
+# Policy: chords must be 3-4 keys; outputs must be ≥5 chars.
 
 ary	array
 asy	async
@@ -7,20 +8,16 @@ bln	boolean
 cah	catch(^
 cls	class	classes
 con	console.^
-cs	const
 def	default
 ext	export
 xtd	extends
-fc	function
 imo	import
 itf	interface
-nul	null
 nbr	number
 req	request
 res	response
 rut	return
 trw	throw
-typ	type
 und	undefined
 ucb	useCallback(^
 uef	useEffect(^

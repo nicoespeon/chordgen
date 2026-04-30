@@ -1,55 +1,23 @@
 # English high-frequency words.
 # Format: chord<TAB>output  (trailing space added; suffix ^ to disable)
-# All chords here are 3 keys, no shift, no duplicates within a chord.
+# Policy: chords must be 3-4 keys; outputs must be ≥5 chars.
 
 aot	about
 afr	after
-ag	again
-an	and
-ar	are
 bcs	because
 bfr	before
-cdo	code
 cld	could
-dat	date
-don	done
 eft	effort
 exa	example
 fir	first
-fr	from
-ha	have
-im	importance
-jst	just
-mak	make
-ned	need
 nev	never
-not	not
-of	of
-on	on
-or	or
-ot	out
 pel	people
 prj	project
-sh	should
 sta	status	statuses
-tes	test
-tha	that
-th	the
 thei	their
-thm	them
-thn	then
 the	there
-ths	this
 tho	those
 thg	through
-tim	time
-wa	want
-wht	what
-wh	when
 whe	where
 wch	which
-wil	will
-wit	with
 wld	would
-yo	you
-yr	your
