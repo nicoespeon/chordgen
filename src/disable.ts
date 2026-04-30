@@ -3,9 +3,23 @@ import { writeRulePack } from "./karabiner-sync.ts";
 main();
 
 function main() {
+	const sentinel = {
+		type: "basic",
+		from: { key_code: "f19" },
+		conditions: [
+			{
+				type: "variable_if",
+				name: "chordgen_disabled_marker",
+				value: 1,
+			},
+		],
+		to: [{ key_code: "f19" }],
+		description: "chordgen no-op sentinel (never fires)",
+	};
+
 	const { distPath, assetsPath, syncedProfiles } = writeRulePack({
 		description: "chordgen (disabled — 0 active chords)",
-		manipulators: [],
+		manipulators: [sentinel],
 	});
 
 	console.log("✔ chordgen disabled (0 active chords)");
