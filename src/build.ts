@@ -2,6 +2,7 @@ import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import {
 	entryToManipulator,
+	entryToShiftedManipulator,
 	mechanicalListenerManipulator,
 	overrideListenerManipulator,
 	V2_PENDING_REGULAR,
@@ -51,15 +52,21 @@ function main() {
 	const overrideEntries: Array<{ entry: ChordEntry; pendingValue: number }> = [];
 	let hasRegularChord = false;
 
-	const chordManipulators = sortedEntries.map((entry) => {
-		if (!entry.trailingSpace) return entryToManipulator(entry, null);
-		if (entry.pluralOverride) {
-			const pendingValue = nextOverrideId++;
-			overrideEntries.push({ entry, pendingValue });
-			return entryToManipulator(entry, pendingValue);
-		}
-		hasRegularChord = true;
-		return entryToManipulator(entry, V2_PENDING_REGULAR);
+	const chordManipulators = sortedEntries.flatMap((entry) => {
+		const pendingValue = (() => {
+			if (!entry.trailingSpace) return null;
+			if (entry.pluralOverride) {
+				const id = nextOverrideId++;
+				overrideEntries.push({ entry, pendingValue: id });
+				return id;
+			}
+			hasRegularChord = true;
+			return V2_PENDING_REGULAR;
+		})();
+		return [
+			entryToShiftedManipulator(entry, pendingValue),
+			entryToManipulator(entry, pendingValue),
+		];
 	});
 
 	const listenerManipulators: Manipulator[] = [];

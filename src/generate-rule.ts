@@ -6,7 +6,7 @@ import {
 import type { ChordEntry } from "./parse-tsv.ts";
 
 const THRESHOLDS_BY_CHORD_LENGTH: Record<number, number> = {
-	3: 40,
+	3: 50,
 	4: 80,
 };
 const FALLBACK_THRESHOLD_MS = 50;
@@ -35,7 +35,7 @@ type SimultaneousFrom = {
 		key_down_order: "insensitive";
 		key_up_order: "insensitive";
 	};
-	modifiers: { optional: string[] };
+	modifiers: { optional?: string[]; mandatory?: string[] };
 };
 
 type SingleKeyFrom = {
@@ -106,6 +106,81 @@ export function entryToManipulator(
 			},
 		],
 		description: `${entry.chord} → ${entry.output}${entry.trailingSpace ? "␣" : ""}`,
+	};
+
+	if (pendingValue !== null) {
+		manipulator.to_delayed_action = {
+			to_if_invoked: [
+				{ set_variable: { name: V2_PENDING_VAR, value: V2_PENDING_NONE } },
+			],
+			to_if_canceled: [],
+		};
+	}
+
+	return manipulator;
+}
+
+export function entryToShiftedManipulator(
+	entry: ChordEntry,
+	pendingValue: number | null,
+): Manipulator {
+	const fromKeys = [...entry.chord].map((char) => {
+		const key = bepoCharToKey(char);
+		if (key.shift) {
+			throw new Error(
+				`${entry.source}:${entry.line} — chord "${entry.chord}" requires shift on '${char}', not supported in chord input`,
+			);
+		}
+		return { key_code: key.key_code };
+	});
+
+	const outputChars = entry.trailingSpace ? entry.output + " " : entry.output;
+	const firstChar = outputChars.charAt(0);
+	const restChars = outputChars.slice(1);
+
+	const firstSeq = bepoCharToKeys(firstChar);
+	const shiftedFirstKeys = firstSeq.map((key, idx, arr) => {
+		const isBaseLetter = idx === arr.length - 1;
+		return toKarabinerKey(isBaseLetter ? { ...key, shift: true } : key);
+	});
+	const restKeys = [...restChars]
+		.flatMap((char) => bepoCharToKeys(char))
+		.map(toKarabinerKey);
+
+	const to: ToEvent[] = [...shiftedFirstKeys, ...restKeys];
+	if (pendingValue !== null) {
+		to.push({ set_variable: { name: V2_PENDING_VAR, value: pendingValue } });
+	}
+
+	const parameters: Record<string, number> = {
+		"basic.simultaneous_threshold_milliseconds":
+			THRESHOLDS_BY_CHORD_LENGTH[entry.chord.length] ?? FALLBACK_THRESHOLD_MS,
+	};
+	if (pendingValue !== null) {
+		parameters["basic.to_delayed_action_delay_milliseconds"] =
+			V2_MODIFIER_WINDOW_MS;
+	}
+
+	const capitalizedOutput =
+		entry.output.charAt(0).toUpperCase() + entry.output.slice(1);
+	const manipulator: Manipulator = {
+		type: "basic",
+		from: {
+			simultaneous: fromKeys,
+			simultaneous_options: {
+				key_down_order: "insensitive",
+				key_up_order: "insensitive",
+			},
+			modifiers: { mandatory: ["any_shift"] },
+		},
+		parameters,
+		to,
+		to_after_key_up: [
+			{
+				shell_command: `mkdir -p "${LOG_DIR}" && echo "$(date +%s) ${entry.chord}↑" >> "${LOG_DIR}/chordgen-$(date +%Y-%m).log"`,
+			},
+		],
+		description: `${entry.chord} → ${capitalizedOutput}${entry.trailingSpace ? "␣" : ""} (shift)`,
 	};
 
 	if (pendingValue !== null) {

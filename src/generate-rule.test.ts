@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
 	entryToManipulator,
+	entryToShiftedManipulator,
 	mechanicalListenerManipulator,
 	overrideListenerManipulator,
 	V2_PENDING_REGULAR,
@@ -149,5 +150,76 @@ describe("overrideListenerManipulator", () => {
 		expect(typedKeys).toEqual([
 			"h", "period", "d", "o", "i", "l", "f", "semicolon",
 		]);
+	});
+});
+
+describe("entryToShiftedManipulator", () => {
+	const thoseEntry: ChordEntry = {
+		chord: "tho",
+		output: "those",
+		trailingSpace: true,
+		pluralOverride: undefined,
+		source: "en.tsv",
+		line: 1,
+	};
+
+	it("requires shift as a mandatory modifier", () => {
+		const mani = entryToShiftedManipulator(thoseEntry, V2_PENDING_REGULAR);
+
+		expect(mani.from).toMatchObject({
+			modifiers: { mandatory: ["any_shift"] },
+		});
+	});
+
+	it("capitalizes only the first character of the output", () => {
+		const mani = entryToShiftedManipulator(thoseEntry, V2_PENDING_REGULAR);
+
+		const keyEvents = (mani.to ?? []).filter((e) => "key_code" in e);
+		const firstKey = keyEvents[0];
+		const restKeys = keyEvents.slice(1, "those".length + 1);
+
+		expect(firstKey).toEqual({ key_code: "j", modifiers: ["left_shift"] });
+		expect(restKeys.every((k) => !("modifiers" in k && k.modifiers))).toBe(true);
+	});
+
+	it("preserves v2 set_variable + delayed_action when pendingValue is provided", () => {
+		const mani = entryToShiftedManipulator(thoseEntry, V2_PENDING_REGULAR);
+
+		expect(mani.to).toContainEqual({
+			set_variable: { name: V2_PENDING_VAR, value: V2_PENDING_REGULAR },
+		});
+		expect(mani.to_delayed_action).toMatchObject({
+			to_if_invoked: [{ set_variable: { name: V2_PENDING_VAR, value: 0 } }],
+		});
+		expect(mani.parameters).toMatchObject({
+			"basic.to_delayed_action_delay_milliseconds": V2_MODIFIER_WINDOW_MS,
+		});
+	});
+
+	it("emits no v2 fields when pendingValue is null (caret chord case)", () => {
+		const caretEntry: ChordEntry = {
+			...thoseEntry,
+			output: "console.",
+			trailingSpace: false,
+		};
+		const mani = entryToShiftedManipulator(caretEntry, null);
+
+		expect(mani.to).not.toContainEqual(
+			expect.objectContaining({ set_variable: expect.anything() }),
+		);
+		expect(mani.to_delayed_action).toBeUndefined();
+	});
+
+	it("capitalizes the BASE letter of a composed first character (ê → Ê)", () => {
+		const etreEntry: ChordEntry = {
+			...thoseEntry,
+			chord: "etr",
+			output: "êtres",
+		};
+		const mani = entryToShiftedManipulator(etreEntry, V2_PENDING_REGULAR);
+
+		const keyEvents = (mani.to ?? []).filter((e) => "key_code" in e);
+		expect(keyEvents[0]).toEqual({ key_code: "y" });
+		expect(keyEvents[1]).toEqual({ key_code: "f", modifiers: ["left_shift"] });
 	});
 });
