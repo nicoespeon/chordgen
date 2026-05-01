@@ -171,7 +171,7 @@ export function entryToShiftedManipulator(
 				key_down_order: "insensitive",
 				key_up_order: "insensitive",
 			},
-			modifiers: { mandatory: ["any_shift"] },
+			modifiers: { mandatory: ["shift"] },
 		},
 		parameters,
 		to,

@@ -167,7 +167,7 @@ describe("entryToShiftedManipulator", () => {
 		const mani = entryToShiftedManipulator(thoseEntry, V2_PENDING_REGULAR);
 
 		expect(mani.from).toMatchObject({
-			modifiers: { mandatory: ["any_shift"] },
+			modifiers: { mandatory: ["shift"] },
 		});
 	});
 
