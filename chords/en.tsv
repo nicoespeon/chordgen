@@ -3,23 +3,23 @@
 # Policy: chords must be 3-4 keys; outputs must be ≥5 chars.
 
 aot	about
-afr	after
+aft	after
 alt	although
 bcs	because
-bfr	before
+bef	before
 cld	could
 eft	effort
-exa	example
+exm	example
 fir	first
 nev	never
 pel	people
 pro	project
 reb	rebase
 sta	status	statuses
-thei	their
+thi	their
 the	there
 tho	those
 thg	through
 whe	where
-wch	which
-wld	would
+whi	which
+wou	would

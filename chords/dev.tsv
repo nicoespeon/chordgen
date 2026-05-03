@@ -11,6 +11,7 @@ con	console.^
 def	default
 ext	export
 xtd	extends
+fcu	function
 imo	import
 itf	interface
 nbr	number
